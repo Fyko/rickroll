@@ -52,7 +52,8 @@ jobs:
               required_contexts: [],
               environment: 'Landscape Rickroll (Production)',
               production_environment: true,
-            })
+            });
+            console.dir(deployment);
             
             if (deployment.status === 201) {
               core.setOutput('id', deployment.data.id);
@@ -84,16 +85,17 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { CLOUDFLARE_ACCOUNT_ID, PAGES_PROJECT_NAME } = process.env;
-            let deploymentId = ${{ steps.get_deployment.outputs.id }};
-            let environmentUrl = ${{ steps.get_deployment.outputs.url }};
+            let deploymentId = "${{ steps.get_deployment.outputs.id }}";
+            let environmentUrl = "${{ steps.get_deployment.outputs.url }}";
 
             const deploymentStatus = await github.repos.createDeploymentStatus({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              deployment_id: ${{ steps.create_github_deployment.outputs.id }},
+              deployment_id: "${{ steps.create_github_deployment.outputs.id }}",
               state: 'success',
               log_url: `https://dash.cloudflare.com/${CLOUDFLARE_ACCOUNT_ID}/pages/view/${PAGES_PROJECT_NAME}/${deploymentId}`,
               description: 'Cloudflare Pages',
               environment_url: environmentUrl,
               environment: 'Landscape Rickroll (Production)',
-            })
+            });
+            console.dir(deploymentStatus);
