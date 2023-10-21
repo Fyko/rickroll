@@ -1,34 +1,44 @@
-name: Deploy static content to Pages
-
+name: Publish to Cloudflare Pages
 on:
   push:
-    branches: ["main"]
-  workflow_dispatch:
+    branches: [main]
 
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+  PAGES_PROJECT_NAME: ${{ vars.PAGES_PROJECT_NAME }}
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      deployments: write
+    name: Publish to Cloudflare Pages
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup Pages
-        uses: actions/configure-pages@v3
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: '.'
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v2
+        uses: actions/checkout@v4
+
+      - name: Check if Cloudflare Pages Project exists
+        shell: bash
+        id: check_project
+        run: |
+          check=$(curl -s -X GET "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PAGES_PROJECT_NAME" \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            -H "Content-Type:application/json" | jq -r '.success')
+          echo "result=$check" >> $GITHUB_OUTPUT
+  
+      - name: Create Cloudflare Pages Project (if it doesn't exist)
+        shell: bash
+        if: steps.check_project.outputs.result != 'true'
+        run: |
+          curl -s -X POST "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects" \
+            -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+            -H "Content-Type:application/json" \
+            --data '{"name":"$PAGES_PROJECT_NAME", "production_branch":"${GITHUB_REF/refs\/heads\//}"}'
+
+      - name: Deploy
+        run: |
+          npx wrangler@3 deploy . \
+          --project-name="$PAGES_PROJECT_NAME" \
+          --branch="$PAGES_BRANCH"
