@@ -38,6 +38,6 @@ jobs:
 
       - name: Deploy
         run: |
-          npx wrangler@4 pages deploy . \
+          npx wrangler@3 pages deploy . \
           --project-name="$PAGES_PROJECT_NAME" \
           --branch="$PAGES_BRANCH"
