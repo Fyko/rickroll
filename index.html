@@ -2,33 +2,23 @@
 <html lang="en">
 
 <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
    <script defer data-domain="prettylandscapes.com" src="http://apples.fyko.net/js/script.js"></script>
+   <title>Loading...</title>
 </head>
 
-<body>
+<body onload="initPage()">
    <video autoplay loop width="100%">
       <source src="rickroll.mp4" type="video/mp4">
       Sorry, your browser doesn't support embedded videos.
    </video>
    <script>
-      const currentURL = "rickroll.mp4";
-      const pageTitle = "Loading...";
-      
-      function setTitle() {
-         document.title = pageTitle;
+      const initPage = () => {
+         document.title = 'Loading...'
+         window.location.href = 'rickroll.mp4'
       }
-      
-      function redirect() {
-         window.location.href = currentURL;
-      }
-      
-      function onload() {
-         setTitle();
-         redirect();
-      }
-      
-      window.onload = onload();
-    </script>
+   </script>
 </body>
 
 </html>
