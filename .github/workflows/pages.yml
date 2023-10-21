@@ -74,7 +74,8 @@ jobs:
           deployment=$(curl -s -X GET "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/$PAGES_PROJECT_NAME/deployments" \
             -H "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
             -H "Content-Type:application/json" | jq -r '.result[0]')
-          echo "deployment=$deployment" >> $GITHUB_OUTPUT
+          echo "id=$(echo $deployment | jq -r .id)" >> $GITHUB_OUTPUT
+          echo "url=$(echo $deployment | jq -r .url)" >> $GITHUB_OUTPUT
         
 
       - name: Create GitHub Deployment Status
@@ -83,8 +84,8 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const { CLOUDFLARE_ACCOUNT_ID, PAGES_PROJECT_NAME } = process.env;
-            let deploymentId = ${{ fromJson(steps.get_deployment.outputs.deployment).id }};
-            let environmentUrl = ${{ fromJson(steps.get_deployment.outputs.deployment).url }};
+            let deploymentId = ${{ steps.get_deployment.outputs.id }};
+            let environmentUrl = ${{ steps.get_deployment.outputs.url }};
 
             const deploymentStatus = await github.repos.createDeploymentStatus({
               owner: context.repo.owner,
