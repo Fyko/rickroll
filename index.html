@@ -1,22 +1,41 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" prefix="og: https://ogp.me/ns#">
 
 <head>
+   <title>Loading...</title>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+   <meta name="og:title" content="Pretty Landscapes" >
+   <meta name="og:type" content="website" />
+   <meta name="og:description" content="A collection of pretty landscape photos." >
+   <meta name="og:image" content="/thumbnail.jpg" >
+   <meta name="og:url" content="/" />
+   <meta name="og:locale" content="en_US" />
+   <meta name="og:locale:alternate" content="en_GB" />
+
+   <meta name="twitter:card" content="summary_large_image" />
+   <meta name="twitter:site" content="@fykowo" />
+   <meta name="twitter:creator" content="@fykowo" />
+   <meta name="twitter:title" content="Pretty Landscapes" />
+   <meta name="twitter:description" content="A collection of pretty landscape photos." />
+   <meta name="twitter:image" content="/thumbnail.jpg" />
+   <meta name="twitter:url" content="/" />
+
+   <meta name="theme-color" content="#7b8472" >
+
    <script defer data-domain="prettylandscapes.com" src="http://apples.fyko.net/js/script.js"></script>
-   <title>Loading...</title>
 </head>
 
 <body onload="initPage()">
    <video autoplay loop width="100%">
-      <source src="rickroll.mp4" type="video/mp4">
+      <source src="montage.mp4" type="video/mp4">
       Sorry, your browser doesn't support embedded videos.
    </video>
    <script>
       const initPage = () => {
          document.title = 'Loading...'
-         window.location.href = 'rickroll.mp4'
+         window.location.href = 'montage.mp4'
       }
    </script>
 </body>
